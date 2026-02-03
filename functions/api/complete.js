@@ -46,6 +46,11 @@ export async function onRequestPost(context) {
             throw new Error(`StudyLog 삽입 SQL 실행 실패: ${insertResult.error}`);
         }
 
+        // 3. CurrentTodoList에서도 완료 상태로 표시
+        await env.DB.prepare(
+            "UPDATE CurrentTodoList SET is_completed = 1 WHERE topic_id = ?"
+        ).bind(numericId).run();
+
         return new Response(JSON.stringify({
             success: true,
             message: "저장 성공",

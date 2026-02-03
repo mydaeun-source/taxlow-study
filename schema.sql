@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS StudyLog (
 CREATE TABLE IF NOT EXISTS CurrentTodoList (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     topic_id INTEGER NOT NULL,
+    is_completed INTEGER DEFAULT 0, -- 0: 미완료, 1: 완료
     FOREIGN KEY (topic_id) REFERENCES TaxLawStudy(id)
 );
 

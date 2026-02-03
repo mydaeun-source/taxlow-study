@@ -6,12 +6,12 @@ export async function onRequest(context) {
   try {
     // 1. regenerate 가 아니고, 저장된 리스트가 있는지 확인
     if (!regenerate) {
-      const { results: savedItems } = await env.DB.prepare(
-        "SELECT t.* FROM TaxLawStudy t JOIN CurrentTodoList c ON t.id = c.topic_id ORDER BY c.id ASC"
+      const { results } = await env.DB.prepare(
+        "SELECT t.*, c.is_completed FROM CurrentTodoList c JOIN TaxLawStudy t ON c.topic_id = t.id"
       ).all();
 
-      if (savedItems && savedItems.length > 0) {
-        return new Response(JSON.stringify(savedItems), {
+      if (results && results.length > 0) {
+        return new Response(JSON.stringify(results), {
           headers: { "Content-Type": "application/json" }
         });
       }

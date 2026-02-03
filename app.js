@@ -68,14 +68,22 @@ document.addEventListener('DOMContentLoaded', () => {
         topics.forEach(topic => {
             const card = document.createElement('div');
             card.className = 'todo-card';
+            const isCompleted = topic.is_completed === 1;
             card.innerHTML = `
                 <div class="part-tag">${topic.part}</div>
                 <div class="topic-title">${topic.topic}</div>
                 <div class="card-actions">
-                    <button class="complete-btn" data-id="${topic.id}" data-part="${topic.part}" data-topic="${topic.topic}">완료</button>
-                    <button class="cancel-btn">취소</button>
+                    ${isCompleted ?
+                    '<span style="color:var(--success)">완료됨</span>' :
+                    `<button class="complete-btn" data-id="${topic.id}" data-part="${topic.part}" data-topic="${topic.topic}">완료</button>
+                         <button class="cancel-btn">취소</button>`
+                }
                 </div>
             `;
+
+            if (isCompleted) {
+                card.style.opacity = '0.5';
+            }
 
             card.querySelector('.complete-btn').addEventListener('click', async (e) => {
                 const btn = e.currentTarget;
