@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const item = document.createElement('div');
                     item.className = 'stat-item';
                     item.innerHTML = `
-                        <div class="stat-label">Part ${s.part}</div>
+                        <div class="stat-label">${s.part} (${s.topic_count})</div>
                         <div class="stat-value">${s.total_count}</div>
                         <div class="stat-label">학습 완료</div>
                     `;

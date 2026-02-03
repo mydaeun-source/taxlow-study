@@ -4,7 +4,7 @@ export async function onRequest(context) {
     try {
         // 파트별 총 학습 횟수 및 로그 데이터 조회
         const stats = await env.DB.prepare(
-            "SELECT part, SUM(count) as total_count FROM TaxLawStudy GROUP BY part"
+            "SELECT part, SUM(count) as total_count, COUNT(*) as topic_count FROM TaxLawStudy GROUP BY part"
         ).all();
 
         const logs = await env.DB.prepare(
