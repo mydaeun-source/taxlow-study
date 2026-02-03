@@ -22,23 +22,29 @@ export async function onRequest(context) {
     // 기존 CurrentTodoList 비우기
     await env.DB.prepare("DELETE FROM CurrentTodoList").run();
 
-    // 실제 DB에 존재하는 모든 파트(법 이름) 목록을 가져옴
+    // 각 파트별로 count가 가장 적은 것 중 하나를 랜덤하게 추출
     const { results: parts } = await env.DB.prepare(
       "SELECT DISTINCT part FROM TaxLawStudy"
     ).all();
 
+    if (!parts || parts.length === 0) {
+      return new Response(JSON.stringify([]), { headers: { "Content-Type": "application/json" } });
+    }
+
     const todoList = [];
 
-    // 각 파트별로 count가 가장 적은 것 중 하나를 랜덤하게 추출
     for (const p of parts) {
-      const { results } = await env.DB.prepare(
-        "SELECT * FROM TaxLawStudy WHERE part = ? ORDER BY count ASC, RANDOM() LIMIT 1"
+      const topicResult = await env.DB.prepare(
+        "SELECT *, 0 as is_completed FROM TaxLawStudy WHERE part = ? ORDER BY count ASC, RANDOM() LIMIT 1"
       ).bind(p.part).all();
 
-      if (results && results.length > 0) {
-        todoList.push(results[0]);
+      if (topicResult.results && topicResult.results.length > 0) {
+        const topic = topicResult.results[0];
+        todoList.push(topic);
         // CurrentTodoList 에 저장
-        await env.DB.prepare("INSERT INTO CurrentTodoList (topic_id) VALUES (?)").bind(results[0].id).run();
+        await env.DB.prepare("INSERT INTO CurrentTodoList (topic_id, is_completed) VALUES (?, 0)")
+          .bind(topic.id)
+          .run();
       }
     }
 

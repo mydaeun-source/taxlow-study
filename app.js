@@ -50,7 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const url = regenerate ? '/api/topics?regenerate=true' : '/api/topics';
             const response = await fetch(url);
-            if (!response.ok) throw new Error('API 응답 오류');
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `서버 오류 (상태 코드: ${response.status})`);
+            }
+
             const data = await response.json();
             if (data.length === 0) {
                 todoList.innerHTML = '<div class="error-msg">표시할 주제가 없습니다. 데이터베이스를 확인해주세요.</div>';
@@ -59,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error('Failed to load topics:', err);
-            todoList.innerHTML = '<div class="error-msg">데이터를 불러오지 못했습니다. (서버 연결 확인 필요)</div>';
+            todoList.innerHTML = `<div class="error-msg">데이터를 불러오지 못했습니다. (${err.message})</div>`;
         }
     }
 
