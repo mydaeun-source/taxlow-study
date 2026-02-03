@@ -78,15 +78,17 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             card.querySelector('.complete-btn').addEventListener('click', async (e) => {
-                const btn = e.target;
+                const btn = e.currentTarget;
                 const { id, part, topic: topicName } = btn.dataset;
+
+                console.log("완료 버튼 클릭됨:", { id, part, topicName }); // 디버깅용 로그
 
                 const result = await completeTopic(id, part, topicName);
                 if (result.success) {
                     card.style.opacity = '0.5';
                     card.querySelector('.card-actions').innerHTML = '<span style="color:var(--success)">완료됨</span>';
                 } else {
-                    alert('저장에 실패했습니다: ' + (result.error || '알 수 없는 오류'));
+                    alert('저장에 실패했습니다: ' + (result.error || '알 수 없는 서버 오류'));
                 }
             });
 
@@ -106,15 +108,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, part, topic })
             });
-            const data = await response.json();
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                return { success: false, error: '서버가 올바른 응답을 보내지 않았습니다. (JSON 파싱 오류)' };
+            }
+
             if (!response.ok) {
-                console.error('저장 실패:', data.error);
+                console.error('저장 실패 응답:', data);
                 return { success: false, error: data.error };
             }
             return { success: true };
         } catch (err) {
-            console.error('저장 중 통신 오류:', err);
-            return { success: false, error: '서버와 통신할 수 없습니다.' };
+            console.error('네트워크 또는 기타 통신 오류:', err);
+            return { success: false, error: '서버 접속에 실패했습니다. 인터넷 연결이나 서버 상태를 확인하세요.' };
         }
     }
 
