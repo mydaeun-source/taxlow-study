@@ -15,6 +15,13 @@ CREATE TABLE IF NOT EXISTS StudyLog (
     dodate TEXT NOT NULL
 );
 
+-- CurrentTodoList 테이블: 현재 유지 중인 To-Do 리스트 저장
+CREATE TABLE IF NOT EXISTS CurrentTodoList (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    topic_id INTEGER NOT NULL,
+    FOREIGN KEY (topic_id) REFERENCES TaxLawStudy(id)
+);
+
 -- 초기 데이터 예시 (사용자가 실제 데이터를 넣기 전 테스트용)
 INSERT INTO TaxLawStudy (part, topic, count) VALUES 
 (1, '조세총론 1', 0), (1, '조세총론 2', 0),

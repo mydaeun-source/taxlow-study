@@ -45,10 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 3. Dashboard Logic
-    async function loadDashboard() {
+    async function loadDashboard(regenerate = false) {
         todoList.innerHTML = '<div class="loading-msg">데이터를 불러오는 중...</div>';
         try {
-            const response = await fetch('/api/topics');
+            const url = regenerate ? '/api/topics?regenerate=true' : '/api/topics';
+            const response = await fetch(url);
             if (!response.ok) throw new Error('API 응답 오류');
             const data = await response.json();
             if (data.length === 0) {
@@ -108,7 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     remakeBtn.addEventListener('click', () => {
-        loadDashboard();
+        if (confirm('현재 리스트를 지우고 새로운 추천 주제를 생성하시겠습니까?')) {
+            loadDashboard(true);
+        }
     });
 
     // 4. Progress Logic
