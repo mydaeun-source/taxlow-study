@@ -46,12 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Dashboard Logic
     async function loadDashboard() {
+        todoList.innerHTML = '<div class="loading-msg">데이터를 불러오는 중...</div>';
         try {
             const response = await fetch('/api/topics');
+            if (!response.ok) throw new Error('API 응답 오류');
             const data = await response.json();
-            renderTodoList(data);
+            if (data.length === 0) {
+                todoList.innerHTML = '<div class="error-msg">표시할 주제가 없습니다. 데이터베이스를 확인해주세요.</div>';
+            } else {
+                renderTodoList(data);
+            }
         } catch (err) {
             console.error('Failed to load topics:', err);
+            todoList.innerHTML = '<div class="error-msg">데이터를 불러오지 못했습니다. (서버 연결 확인 필요)</div>';
         }
     }
 
@@ -61,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('div');
             card.className = 'todo-card';
             card.innerHTML = `
-                <div class="part-tag">PART ${topic.part}</div>
+                <div class="part-tag">${topic.part}</div>
                 <div class="topic-title">${topic.topic}</div>
                 <div class="card-actions">
                     <button class="complete-btn" data-id="${topic.id}" data-part="${topic.part}" data-topic="${topic.topic}">완료</button>
@@ -115,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const item = document.createElement('div');
                 item.className = 'stat-item';
                 item.innerHTML = `
-                    <div class="stat-label">PART ${s.part}</div>
+                    <div class="stat-label">${s.part}</div>
                     <div class="stat-value">${s.total_count}</div>
                     <div class="stat-label">학습 완료</div>
                 `;

@@ -279,3 +279,18 @@ td {
         grid-template-columns: 1fr;
     }
 }
+
+.loading-msg, .error-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 2rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: var(--text-muted);
+}
+
+.error-msg {
+    color: var(--danger);
+    border-color: var(--danger);
+}
