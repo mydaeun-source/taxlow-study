@@ -10,9 +10,11 @@ CREATE TABLE IF NOT EXISTS TaxLawStudy (
 -- StudyLog 테이블: 학습 기록 저장
 CREATE TABLE IF NOT EXISTS StudyLog (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    master_id INTEGER NOT NULL, -- TaxLawStudy(id) 외래키
     part INTEGER NOT NULL,
     topic TEXT NOT NULL,
-    dodate TEXT NOT NULL
+    dodate TEXT NOT NULL,
+    FOREIGN KEY (master_id) REFERENCES TaxLawStudy(id)
 );
 
 -- CurrentTodoList 테이블: 현재 유지 중인 To-Do 리스트 저장

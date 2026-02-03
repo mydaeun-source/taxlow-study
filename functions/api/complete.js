@@ -37,8 +37,8 @@ export async function onRequestPost(context) {
 
         // 2. StudyLog 삽입 시도
         const insertStmt = env.DB.prepare(
-            "INSERT INTO StudyLog (part, topic, dodate) VALUES (?, ?, ?)"
-        ).bind(numericPart, topic, now);
+            "INSERT INTO StudyLog (master_id, part, topic, dodate) VALUES (?, ?, ?, ?)"
+        ).bind(numericId, numericPart, topic, now);
 
         const insertResult = await insertStmt.run();
 
