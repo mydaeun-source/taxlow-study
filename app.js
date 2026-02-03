@@ -78,10 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             card.querySelector('.complete-btn').addEventListener('click', async (e) => {
-                const { id, part, topic: topicName } = e.target.dataset;
-                await completeTopic(id, part, topicName);
-                card.style.opacity = '0.5';
-                card.querySelector('.card-actions').innerHTML = '<span style="color:var(--success)">완료됨</span>';
+                const btn = e.target;
+                const { id, part, topic: topicName } = btn.dataset;
+
+                const result = await completeTopic(id, part, topicName);
+                if (result.success) {
+                    card.style.opacity = '0.5';
+                    card.querySelector('.card-actions').innerHTML = '<span style="color:var(--success)">완료됨</span>';
+                } else {
+                    alert('저장에 실패했습니다: ' + (result.error || '알 수 없는 오류'));
+                }
             });
 
             card.querySelector('.cancel-btn').addEventListener('click', () => {
@@ -100,11 +106,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, part, topic })
             });
-            if (response.ok) {
-                // Keep the current view, but data is updated in DB
+            const data = await response.json();
+            if (!response.ok) {
+                console.error('저장 실패:', data.error);
+                return { success: false, error: data.error };
             }
+            return { success: true };
         } catch (err) {
-            console.error('Failed to complete topic:', err);
+            console.error('저장 중 통신 오류:', err);
+            return { success: false, error: '서버와 통신할 수 없습니다.' };
         }
     }
 
