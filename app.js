@@ -85,25 +85,32 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.style.opacity = '0.5';
             }
 
-            card.querySelector('.complete-btn').addEventListener('click', async (e) => {
-                const btn = e.currentTarget;
-                const { id, part, topic: topicName } = btn.dataset;
+            const completeBtn = card.querySelector('.complete-btn');
+            const cancelBtn = card.querySelector('.cancel-btn');
 
-                console.log("완료 버튼 클릭됨:", { id, part, topicName }); // 디버깅용 로그
+            if (completeBtn) {
+                completeBtn.addEventListener('click', async (e) => {
+                    const btn = e.currentTarget;
+                    const { id, part, topic: topicName } = btn.dataset;
 
-                const result = await completeTopic(id, part, topicName);
-                if (result.success) {
+                    console.log("완료 버튼 클릭됨:", { id, part, topicName }); // 디버깅용 로그
+
+                    const result = await completeTopic(id, part, topicName);
+                    if (result.success) {
+                        card.style.opacity = '0.5';
+                        card.querySelector('.card-actions').innerHTML = '<span style="color:var(--success)">완료됨</span>';
+                    } else {
+                        alert('저장에 실패했습니다: ' + (result.error || '알 수 없는 서버 오류'));
+                    }
+                });
+            }
+
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', () => {
                     card.style.opacity = '0.5';
-                    card.querySelector('.card-actions').innerHTML = '<span style="color:var(--success)">완료됨</span>';
-                } else {
-                    alert('저장에 실패했습니다: ' + (result.error || '알 수 없는 서버 오류'));
-                }
-            });
-
-            card.querySelector('.cancel-btn').addEventListener('click', () => {
-                card.style.opacity = '0.5';
-                card.querySelector('.card-actions').innerHTML = '<span style="color:var(--text-muted)">제거됨</span>';
-            });
+                    card.querySelector('.card-actions').innerHTML = '<span style="color:var(--text-muted)">제거됨</span>';
+                });
+            }
 
             todoList.appendChild(card);
         });
