@@ -5,12 +5,19 @@ export async function onRequestPost(context) {
         const body = await request.json();
         const { id, part, topic } = body;
 
-        if (!id || !part || !topic) {
-            throw new Error("필수 데이터(id, part, topic)가 누락되었습니다.");
+        console.log("저장 요청 데이터:", { id, part, topic });
+
+        if (id === undefined || part === undefined || !topic) {
+            throw new Error(`필수 데이터가 누락되었습니다. (id: ${id}, part: ${part}, topic: ${topic})`);
         }
 
         const numericId = parseInt(id, 10);
         const numericPart = parseInt(part, 10);
+
+        if (isNaN(numericId) || isNaN(numericPart)) {
+            throw new Error(`데이터 형식이 올바르지 않습니다. (numericId: ${numericId}, numericPart: ${numericPart})`);
+        }
+
         const now = new Date().toISOString().split('T')[0];
 
         // 1. TaxLawStudy 테이블 업데이트 (count + 1, 날짜 갱신)
@@ -19,7 +26,7 @@ export async function onRequestPost(context) {
         ).bind(now, numericId).run();
 
         if (!updateResult.success) {
-            throw new Error("TaxLawStudy 업데이트 실패: " + (updateResult.error || "알 수 없는 오류"));
+            throw new Error("TaxLawStudy 업데이트 실패: " + (updateResult.error || "DB 오류 발생"));
         }
 
         // 2. StudyLog 테이블에 기록 삽입
@@ -28,15 +35,19 @@ export async function onRequestPost(context) {
         ).bind(numericPart, topic, now).run();
 
         if (!insertResult.success) {
-            throw new Error("StudyLog 저장 실패: " + (insertResult.error || "알 수 없는 오류"));
+            throw new Error("StudyLog 저장 실패: " + (insertResult.error || "DB 오류 발생"));
         }
 
-        return new Response(JSON.stringify({ success: true }), {
+        return new Response(JSON.stringify({ success: true, message: "학습 기록이 저장되었습니다." }), {
             headers: { "Content-Type": "application/json" }
         });
     } catch (err) {
-        console.error("Complete API Error:", err.message);
-        return new Response(JSON.stringify({ error: err.message }), {
+        console.error("학습 완료 API 오류:", err.message);
+        return new Response(JSON.stringify({
+            success: false,
+            error: err.message,
+            timestamp: new Date().toISOString()
+        }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
         });
