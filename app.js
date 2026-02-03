@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     tr.innerHTML = `
                         <td>Part ${log.part}</td>
                         <td>${log.topic}</td>
-                        <td>${log.dodate}</td>
+                        <td>${log.study_date}</td>
                     `;
                     logBody.appendChild(tr);
                 });

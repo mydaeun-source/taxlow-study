@@ -8,7 +8,11 @@ export async function onRequest(context) {
         ).all();
 
         const logs = await env.DB.prepare(
-            "SELECT * FROM StudyLog ORDER BY dodate DESC LIMIT 50"
+            `SELECT l.*, t.part, t.topic 
+             FROM StudyLog l
+             JOIN TaxLawStudy t ON l.master_id = t.id
+             ORDER BY l.study_date DESC, l.created_at DESC 
+             LIMIT 50`
         ).all();
 
         return new Response(JSON.stringify({

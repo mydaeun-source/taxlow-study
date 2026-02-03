@@ -35,10 +35,10 @@ export async function onRequestPost(context) {
             throw new Error(`ID ${numericId}에 해당하는 주제를 찾을 수 없어 업데이트하지 못했습니다.`);
         }
 
-        // 2. StudyLog 삽입 시도
+        // 2. StudyLog 이력 삽입 (수정된 구조 반영)
         const insertStmt = env.DB.prepare(
-            "INSERT INTO StudyLog (master_id, part, topic, dodate) VALUES (?, ?, ?, ?)"
-        ).bind(numericId, numericPart, topic, now);
+            "INSERT INTO StudyLog (master_id, study_date) VALUES (?, ?)"
+        ).bind(numericId, now);
 
         const insertResult = await insertStmt.run();
 

@@ -7,13 +7,12 @@ CREATE TABLE IF NOT EXISTS TaxLawStudy (
     last_date TEXT
 );
 
--- StudyLog 테이블: 학습 기록 저장
+-- StudyLog 테이블: 학습 이력 관리 (사용자 요청 구조)
 CREATE TABLE IF NOT EXISTS StudyLog (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    master_id INTEGER NOT NULL, -- TaxLawStudy(id) 외래키
-    part INTEGER NOT NULL,
-    topic TEXT NOT NULL,
-    dodate TEXT NOT NULL,
+    log_id INTEGER PRIMARY KEY AUTOINCREMENT, -- 이력 고유 ID
+    master_id INTEGER,                        -- 마스터 테이블(TaxLawStudy)과의 연결 고리
+    study_date TEXT NOT NULL,                 -- 공부한 날짜 (YYYY-MM-DD)
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
     FOREIGN KEY (master_id) REFERENCES TaxLawStudy(id)
 );
 
