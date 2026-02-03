@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } catch (err) {
-            console.error('Failed to load progress:', err);
+            console.error('진도 로드 실패 상세:', err);
             statsGrid.innerHTML = `<div class="error-msg">진도 데이터를 불러오지 못했습니다. (${err.message})</div>`;
             logBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--danger)">데이터 로드 실패</td></tr>';
         }

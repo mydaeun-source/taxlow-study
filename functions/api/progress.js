@@ -11,7 +11,10 @@ export async function onRequest(context) {
             "SELECT * FROM StudyLog ORDER BY dodate DESC LIMIT 50"
         ).all();
 
-        return new Response(JSON.stringify({ stats: stats.results, logs: logs.results }), {
+        return new Response(JSON.stringify({
+            stats: stats.results || [],
+            logs: logs.results || []
+        }), {
             headers: { "Content-Type": "application/json" }
         });
     } catch (err) {
