@@ -1,0 +1,8 @@
+name = "taxlow-study"
+compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kimsdb"
+database_id = "38521081-f414-410d-8b4a-de20cb1d7574" # 실제 배포 시 wrangler d1 create kimsdb를 통해 얻은 ID로 교체 필요

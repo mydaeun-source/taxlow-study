@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxLaw Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Password Auth Overlay -->
+    <div id="auth-overlay" class="overlay">
+        <div class="glass-card auth-card">
+            <h1>TaxLaw Study</h1>
+            <p>비밀번호를 입력하여 접속하세요</p>
+            <input type="password" id="password-input" placeholder="비밀번호 입력">
+            <button id="login-btn">접속하기</button>
+            <p id="auth-error" class="error-msg"></p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="hidden">
+        <header>
+            <nav>
+                <div class="logo">TaxLaw Study</div>
+                <div class="nav-links">
+                    <button id="nav-dashboard" class="active">오늘의 할 일</button>
+                    <button id="nav-progress">학습 진도</button>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Dashboard Section -->
+            <section id="dashboard-section">
+                <div class="section-header">
+                    <h2>오늘의 추천 학습 주제 (To-Do)</h2>
+                    <div class="header-actions">
+                        <button id="remake-btn" class="secondary-btn">다시 만들기</button>
+                    </div>
+                </div>
+                <div id="todo-list" class="todo-grid">
+                    <!-- Dynamic TODO items -->
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section id="progress-section" class="hidden">
+                <div class="section-header">
+                    <h2>학습 진도 현황</h2>
+                </div>
+                <div class="stats-container">
+                    <div id="stats-grid" class="stats-grid">
+                        <!-- Dynamic Stats -->
+                    </div>
+                </div>
+                <div class="log-container">
+                    <h3>최근 학습 기록</h3>
+                    <table id="log-table">
+                        <thead>
+                            <tr>
+                                <th>파트</th>
+                                <th>주제</th>
+                                <th>완료일</th>
+                            </tr>
+                        </thead>
+                        <tbody id="log-body">
+                            <!-- Dynamic Logs -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
