@@ -116,34 +116,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. Progress Logic
     async function loadProgress() {
+        statsGrid.innerHTML = '<div class="loading-msg">진도 데이터를 불러오는 중...</div>';
+        logBody.innerHTML = '<tr><td colspan="3" style="text-align:center">기록을 불러오는 중...</td></tr>';
+
         try {
             const response = await fetch('/api/progress');
-            const { stats, logs } = await response.json();
+            if (!response.ok) throw new Error('API 응답 오류');
+
+            const data = await response.json();
+            const { stats, logs } = data;
 
             statsGrid.innerHTML = '';
-            stats.forEach(s => {
-                const item = document.createElement('div');
-                item.className = 'stat-item';
-                item.innerHTML = `
-                    <div class="stat-label">${s.part}</div>
-                    <div class="stat-value">${s.total_count}</div>
-                    <div class="stat-label">학습 완료</div>
-                `;
-                statsGrid.appendChild(item);
-            });
+            if (!stats || stats.length === 0) {
+                statsGrid.innerHTML = '<div class="info-msg">아직 학습 데이터가 없습니다.</div>';
+            } else {
+                statsGrid.innerHTML = ''; // Clear again to be safe
+                stats.forEach(s => {
+                    const item = document.createElement('div');
+                    item.className = 'stat-item';
+                    item.innerHTML = `
+                        <div class="stat-label">Part ${s.part}</div>
+                        <div class="stat-value">${s.total_count}</div>
+                        <div class="stat-label">학습 완료</div>
+                    `;
+                    statsGrid.appendChild(item);
+                });
+            }
 
             logBody.innerHTML = '';
-            logs.forEach(log => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>Part ${log.part}</td>
-                    <td>${log.topic}</td>
-                    <td>${log.dodate}</td>
-                `;
-                logBody.appendChild(tr);
-            });
+            if (!logs || logs.length === 0) {
+                logBody.innerHTML = '<tr><td colspan="3" style="text-align:center">최근 학습 기록이 없습니다.</td></tr>';
+            } else {
+                logs.forEach(log => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>Part ${log.part}</td>
+                        <td>${log.topic}</td>
+                        <td>${log.dodate}</td>
+                    `;
+                    logBody.appendChild(tr);
+                });
+            }
         } catch (err) {
             console.error('Failed to load progress:', err);
+            statsGrid.innerHTML = `<div class="error-msg">진도 데이터를 불러오지 못했습니다. (${err.message})</div>`;
+            logBody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--danger)">데이터 로드 실패</td></tr>';
         }
     }
 });

@@ -280,7 +280,9 @@ td {
     }
 }
 
-.loading-msg, .error-msg {
+.loading-msg,
+.error-msg,
+.info-msg {
     grid-column: 1 / -1;
     text-align: center;
     padding: 2rem;
